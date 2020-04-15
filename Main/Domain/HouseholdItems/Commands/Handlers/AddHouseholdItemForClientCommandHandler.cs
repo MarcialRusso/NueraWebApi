@@ -25,7 +25,7 @@ namespace Main.Domain.HouseholdItems.Commands.Handlers
             
             _householdItemRepository.Insert(new HouseholdItem
             {
-                Id = Guid.NewGuid(),
+                Id = request.Id,
                 Name = request.Name,
                 Value = (int)request.Value,
                 Category =  request.Category,

@@ -6,6 +6,8 @@ using Main.ClientCatalog.Resources;
 using Main.Domain.ClientCatalog.Models;
 using Main.Domain.ClientCatalog.Queries;
 using Main.Domain.HouseholdItems.Commands;
+using Main.Domain.HouseholdItems.Models;
+using Main.Domain.HouseholdItems.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -41,12 +43,18 @@ namespace Main.ClientCatalog
         //   The FE should be concerned with retrieving the catalog after performing one of these actions.
         [EnableCors]
         [HttpPost]        
-        public async Task<ClientCatalogResource> AddHouseholdItem(AddHouseholdItemRequest item)
+        // techdebt return a resource not the business model
+        public async Task<HouseholdItemModel> AddHouseholdItem(AddHouseholdItemRequest item)
         {
-            var command = new AddHouseholdItemForClientCommand(item.Name, item.Value, item.Category);
+            // techdebt this is only needed for now so we can return the item created.
+            // Instead change command to return Id and then query for new item 
+            var id = Guid.NewGuid();
+            var command = new AddHouseholdItemForClientCommand(id, item.Name, item.Value, item.Category);
             await _mediator.Send(command);
 
-            return await GetCatalogAsync();
+            var model = await _mediator.Send(new HouseholdItemQuery() { HouseholdItemId = id});
+
+            return model;
         }
 
         [EnableCors]

@@ -1,4 +1,5 @@
 ﻿using Main.Domain.Interfaces;
+using System;
 
 namespace Main.Domain.HouseholdItems.Commands
 {
@@ -7,12 +8,18 @@ namespace Main.Domain.HouseholdItems.Commands
     /// </summary>
     public class AddHouseholdItemForClientCommand : ICommand
     {
-        public AddHouseholdItemForClientCommand(string name, uint value, string category)
+        public AddHouseholdItemForClientCommand(Guid id, string name, uint value, string category)
         {
+            Id = id;
             Name = name;
             Value = value;
             Category = category;
         }
+
+        /// <summary>
+        /// The household item ID
+        /// </summary>
+        public Guid Id { get; }
 
         /// <summary>
         /// The household item name
