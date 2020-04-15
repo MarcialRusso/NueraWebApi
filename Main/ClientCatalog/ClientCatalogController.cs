@@ -7,13 +7,14 @@ using Main.Domain.ClientCatalog.Models;
 using Main.Domain.ClientCatalog.Queries;
 using Main.Domain.HouseholdItems.Commands;
 using MediatR;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Main.ClientCatalog
 {
     // TODO - Implement Swagger open API and the route is missing a main domain (Client, Estimator, etc)
     // ie. api/clients/{clientId}/catalogs/{catalogId}
-    [ApiController]
+    [ApiController]    
     [Route("api/client-catalog")]
     public class ClientCatalogController : ControllerBase
     {
@@ -24,6 +25,7 @@ namespace Main.ClientCatalog
             _mediator = mediator;
         }
 
+        [EnableCors]
         [HttpGet]
         public async Task<ClientCatalogResource> GetCatalogAsync()
         {
@@ -37,7 +39,8 @@ namespace Main.ClientCatalog
         // - Move the next two calls to its own controller and create sub-domains
         //   Also they should return a HouseholdItemResource but to get app completion return the catalog
         //   The FE should be concerned with retrieving the catalog after performing one of these actions.
-        [HttpPost]
+        [EnableCors]
+        [HttpPost]        
         public async Task<ClientCatalogResource> AddHouseholdItem(AddHouseholdItemRequest item)
         {
             var command = new AddHouseholdItemForClientCommand(item.Name, item.Value, item.Category);
@@ -46,7 +49,8 @@ namespace Main.ClientCatalog
             return await GetCatalogAsync();
         }
 
-        [HttpDelete, Route("{householdItemId}")]
+        [EnableCors]
+        [HttpDelete, Route("{householdItemId}")]        
         public async Task<ClientCatalogResource> RemoveClientHouseholdItem(Guid householdItemId)
         {
             var command = new RemoveClientHouseholdItemCommand(householdItemId);
